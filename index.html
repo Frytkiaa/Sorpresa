@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuenta Regresiva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #070709;
+            color: #f4f4f6;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .font-serif-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .ambient-bg {
+            background: radial-gradient(circle at 20% 25%, rgba(225, 29, 72, 0.14) 0%, transparent 45%),
+                        radial-gradient(circle at 80% 75%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                        #070709;
+        }
+
+        .glass-card {
+            background: rgba(24, 24, 30, 0.65);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 20px rgba(244, 63, 94, 0.2); }
+            50% { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 35px rgba(244, 63, 94, 0.4); }
+        }
+
+        .pulsing-card {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="ambient-bg p-4 selection:bg-rose-500/30">
+
+    <main class="w-full max-w-md mx-auto flex flex-col items-center text-center">
+
+        <!-- Heart Badge -->
+        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/20 mb-6 shadow-lg">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+
+        <!-- Main Card Container -->
+        <div class="glass-card pulsing-card rounded-3xl p-8 sm:p-10 w-full relative">
+            <h1 id="titleText" class="font-serif-display italic text-2xl sm:text-3xl text-rose-300 mb-2">Algo especial para ti</h1>
+            <p id="subtitleText" class="text-xs sm:text-sm text-zinc-400 mb-8 font-light">La página se abrirá automáticamente al llegar el momento.</p>
+
+            <!-- Counter Grid -->
+            <div class="grid grid-cols-4 gap-2 sm:gap-3 w-full mb-8 font-mono">
+                <div class="bg-zinc-900/90 p-3 rounded-2xl border border-white/10">
+                    <span id="days" class="text-xl sm:text-2xl font-bold text-white block">00</span>
+                    <span class="text-[9px] uppercase text-zinc-500 tracking-wider">Días</span>
+                </div>
+                <div class="bg-zinc-900/90 p-3 rounded-2xl border border-white/10">
+                    <span id="hours" class="text-xl sm:text-2xl font-bold text-white block">00</span>
+                    <span class="text-[9px] uppercase text-zinc-500 tracking-wider">Hrs</span>
+                </div>
+                <div class="bg-zinc-900/90 p-3 rounded-2xl border border-white/10">
+                    <span id="minutes" class="text-xl sm:text-2xl font-bold text-white block">00</span>
+                    <span class="text-[9px] uppercase text-zinc-500 tracking-wider">Min</span>
+                </div>
+                <div class="bg-zinc-900/90 p-3 rounded-2xl border border-white/10">
+                    <span id="seconds" class="text-xl sm:text-2xl font-bold text-rose-400 block">00</span>
+                    <span class="text-[9px] uppercase text-zinc-500 tracking-wider">Seg</span>
+                </div>
+            </div>
+
+            <!-- Clickable Unlock Button (Shown when time is up or already passed) -->
+            <a id="unlockBtn" href="Pagina.html" class="hidden w-full py-3.5 px-6 rounded-2xl bg-rose-500 hover:bg-rose-400 active:scale-95 text-white font-medium text-sm transition shadow-lg shadow-rose-500/30 items-center justify-center gap-2 cursor-pointer">
+                <span>Entrar a la página ♥</span>
+            </a>
+
+            <p id="statusText" class="text-xs text-zinc-500 italic">Esperando el momento exacto...</p>
+        </div>
+
+    </main>
+
+    <script>
+        // --- SET YOUR TARGET DATE & TIME HERE ---
+        // Format: 'YYYY-MM-DDTHH:MM:SS'
+        const targetDate = new Date('2026-12-25T00:00:00').getTime();
+
+        const titleText = document.getElementById('titleText');
+        const subtitleText = document.getElementById('subtitleText');
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const statusText = document.getElementById('statusText');
+
+        function showUnlockedState() {
+            daysEl.textContent = "00";
+            hoursEl.textContent = "00";
+            minutesEl.textContent = "00";
+            secondsEl.textContent = "00";
+
+            titleText.textContent = "¡Ya llegó el momento!";
+            subtitleText.textContent = "Haz clic abajo para ver tu sorpresa.";
+            statusText.style.display = 'none';
+
+            unlockBtn.classList.remove('hidden');
+            unlockBtn.classList.add('flex');
+        }
+
+        // Check immediately if the date has ALREADY passed when opening the page
+        if (Date.now() >= targetDate) {
+            showUnlockedState();
+        } else {
+            // Otherwise, start counting down live
+            const timer = setInterval(() => {
+                const now = Date.now();
+                const distance = targetDate - now;
+
+                if (distance <= 0) {
+                    clearInterval(timer);
+                    showUnlockedState();
+                    // Automatically redirect when hitting zero live
+                    window.location.href = "Pagina.html";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                daysEl.textContent = String(days).padStart(2, '0');
+                hoursEl.textContent = String(hours).padStart(2, '0');
+                minutesEl.textContent = String(minutes).padStart(2, '0');
+                secondsEl.textContent = String(seconds).padStart(2, '0');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
