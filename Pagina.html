@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Te Amo</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,27 +16,126 @@
         }
     </script>
 
-    <!-- Google Fonts: Inter & Playfair Display -->
+    <!-- Google Fonts: Inter, Playfair Display & Dancing Script -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #070709;
             color: #f4f4f6;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            position: relative;
+            width: 100%;
         }
 
         .font-serif-display {
             font-family: 'Playfair Display', serif;
         }
 
-        /* Ambient background glow */
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Unified Ambient background glow across the entire page */
         .ambient-bg {
-            background: radial-gradient(circle at 20% 25%, rgba(225, 29, 72, 0.14) 0%, transparent 45%),
-                        radial-gradient(circle at 80% 75%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+            background: radial-gradient(circle at 15% 20%, rgba(225, 29, 72, 0.12) 0%, transparent 40%),
+                        radial-gradient(circle at 85% 60%, rgba(139, 92, 246, 0.1) 0%, transparent 45%),
+                        radial-gradient(circle at 50% 90%, rgba(244, 63, 94, 0.08) 0%, transparent 50%),
                         #070709;
+        }
+
+        /* Contenedores absolutos para que se muevan de forma natural con el scroll de la página */
+        #starfall-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        #wish-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            overflow: hidden;
+        }
+
+        .wish-text {
+            position: absolute;
+            font-family: 'Dancing Script', cursive;
+            color: rgba(251, 113, 133, 0.85);
+            pointer-events: none;
+            user-select: none;
+            animation: fadeInOut 4s ease-in-out forwards;
+            filter: drop-shadow(0 0 4px rgba(251, 113, 133, 0.5));
+            white-space: nowrap;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            30% {
+                opacity: 0.95;
+                transform: scale(1);
+            }
+            70% {
+                opacity: 0.95;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.05);
+            }
+        }
+
+        #starfall-foreground {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .shooting-star {
+            position: absolute;
+            background: linear-gradient(to right, transparent 0%, rgba(251, 113, 133, var(--star-opacity-mid)) 60%, rgba(255, 255, 255, var(--star-opacity-high)) 100%);
+            border-radius: 9999px;
+            animation: trueStraightFall linear forwards;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+            transform-origin: left center;
+        }
+
+        .shooting-star.foreground-star {
+            filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
+        }
+
+        /* Movimiento vectorial en línea recta con ángulo exacto de 20 grados y mayor duración */
+        @keyframes trueStraightFall {
+            0% {
+                transform: translate(0px, 0px) rotate(20deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--end-x), var(--end-y)) rotate(20deg);
+                opacity: 0;
+            }
         }
 
         /* Subtle glassmorphism cards */
@@ -44,27 +143,46 @@
             background: rgba(24, 24, 30, 0.65);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(251, 113, 133, 0.2);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+            z-index: 10;
         }
 
         /* Polaroid card styles */
         .polaroid {
             background: #ffffff;
             color: #18181b;
-            padding: 10px 10px 28px 10px;
-            border-radius: 6px;
+            padding: 10px 10px 20px 10px;
+            border-radius: 8px;
             box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.6);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.3s;
-        }
-
-        .polaroid img {
-            object-position: top;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.3s;
         }
 
         .polaroid:hover {
-            transform: translateY(-8px) scale(1.06) rotate(0deg) !important;
+            transform: translateY(-8px) scale(1.05) rotate(0deg) !important;
             z-index: 50;
+        }
+
+        /* Washi tape effect on top of polaroids */
+        .washi-tape {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 75px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(4px);
+            border-left: 1px dashed rgba(255, 255, 255, 0.3);
+            border-right: 1px dashed rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+            z-index: 10;
+        }
+
+        /* Chalkboard texture inside the future polaroid */
+        .chalkboard-bg {
+            background: radial-gradient(circle at center, #232329 0%, #121216 100%);
         }
 
         /* Staggered paragraph fade-in */
@@ -80,6 +198,28 @@
                 transform: translateY(0);
             }
         }
+
+        /* Subtle floating pulse for heart */
+        @keyframes softPulse {
+            0%, 100% { transform: scale(1); opacity: 0.85; }
+            50% { transform: scale(1.15); opacity: 1; }
+        }
+
+        .heart-pulse {
+            animation: softPulse 2.5s ease-in-out infinite;
+        }
+
+        /* Card corner delicate star accents */
+        .card-star-tl, .card-star-br {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.6;
+        }
+        .card-star-tl { top: 12px; left: 12px; }
+        .card-star-br { bottom: 12px; right: 12px; }
 
         /* Equalizer bar animation when playing */
         @keyframes eqBounce {
@@ -133,15 +273,28 @@
 </head>
 <body class="ambient-bg min-h-screen flex items-center justify-center p-4 sm:p-8 lg:p-12 selection:bg-rose-500/30 selection:text-rose-200">
 
-    <!-- Main Responsive Container -->
-    <main class="w-full max-w-5xl mx-auto flex flex-col gap-8 sm:gap-12 py-8 sm:py-12">
+    <!-- Starfall Background Container -->
+    <div id="starfall-container"></div>
+    <!-- Contenedor para textos Make a wish -->
+    <div id="wish-container"></div>
+    <!-- Starfall Foreground Container -->
+    <div id="starfall-foreground"></div>
 
-        <!-- Top Section: Letter & Music Player (Stacked vertically on mobile, side-by-side on desktop) -->
+    <!-- Global ambient background decorative light blurs -->
+    <div class="fixed top-10 left-10 w-72 h-72 bg-rose-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="fixed bottom-10 right-10 w-80 h-80 bg-purple-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <!-- Main Responsive Container -->
+    <main class="w-full max-w-5xl mx-auto flex flex-col gap-8 sm:gap-12 py-8 sm:py-12 relative z-10">
+
+        <!-- Top Section: Letter & Music Player -->
         <div class="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-10 items-center">
 
             <!-- Left Column: The Romantic Letter -->
             <section class="w-full lg:col-span-7 glass-card rounded-3xl p-6 sm:p-10 md:p-12 relative overflow-hidden">
-                <!-- Decorative subtle heart icon -->
+                <svg class="card-star-tl text-rose-400" viewBox="0 0 50 50" fill="currentColor"><polygon points="25,2 31,18 48,18 34,28 39,45 25,34 11,45 16,28 2,18 19,18" /></svg>
+                <svg class="card-star-br text-rose-300/60" viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="3"><polygon points="25,2 31,18 48,18 34,28 39,45 25,34 11,45 16,28 2,18 19,18" /></svg>
+
                 <div class="flex items-center gap-3 mb-6 fade-in-up" style="animation-delay: 0.05s;">
                     <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/20">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -151,7 +304,6 @@
                     <span class="text-xs uppercase tracking-[0.2em] text-zinc-400 font-medium">Para ti</span>
                 </div>
 
-                <!-- Letter Paragraphs -->
                 <div class="space-y-5 text-zinc-200 text-base sm:text-lg leading-relaxed font-light">
                     <p class="fade-in-up" style="animation-delay: 0.15s;">
                         No sé cómo explicar todas las cosas que siento por ti, pero quiero que sepas algo: todavía me gustas muchísimo y, por más que haya pasado el tiempo, no pude olvidarte.
@@ -170,7 +322,7 @@
                     </p>
 
                     <p class="fade-in-up pt-3 font-serif-display italic text-2xl sm:text-3xl text-rose-300" style="animation-delay: 0.75s;">
-                        Te quiero.
+                        Te quiero
                     </p>
                 </div>
             </section>
@@ -178,8 +330,9 @@
             <!-- Right Column: Clean Music Player Card -->
             <aside class="w-full lg:col-span-5 flex justify-center fade-in-up" style="animation-delay: 0.35s;">
                 <div class="glass-card rounded-3xl p-6 sm:p-7 w-full max-w-sm flex flex-col items-center text-center">
+                    <svg class="card-star-tl text-rose-300/60" viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="3"><polygon points="25,2 31,18 48,18 34,28 39,45 25,34 11,45 16,28 2,18 19,18" /></svg>
+                    <svg class="card-star-br text-rose-400" viewBox="0 0 50 50" fill="currentColor"><polygon points="25,2 31,18 48,18 34,28 39,45 25,34 11,45 16,28 2,18 19,18" /></svg>
 
-                    <!-- Album Artwork -->
                     <div class="relative w-full aspect-square max-w-[240px] sm:max-w-[270px] rounded-2xl overflow-hidden border border-white/15 shadow-2xl mb-6 bg-zinc-900">
                         <img
                             src="https://i1.sndcdn.com/artworks-ZWDLwpIoq9IX-0-t500x500.jpg"
@@ -190,13 +343,11 @@
                         />
                     </div>
 
-                    <!-- Song Info & Equalizer -->
                     <div class="w-full flex items-center justify-between mb-3 sm:mb-4 px-1">
                         <div class="text-left overflow-hidden pr-2">
                             <h2 class="text-white font-semibold text-base sm:text-lg truncate">BbY WOW</h2>
                             <p class="text-zinc-400 text-xs sm:text-sm truncate">KAROL G</p>
                         </div>
-                        <!-- Animated Equalizer -->
                         <div id="equalizer" class="flex items-end gap-1 h-5 shrink-0">
                             <span class="eq-bar"></span>
                             <span class="eq-bar"></span>
@@ -205,7 +356,6 @@
                         </div>
                     </div>
 
-                    <!-- Progress Bar & Timestamps -->
                     <div class="w-full mb-4 sm:mb-5">
                         <input
                             type="range"
@@ -223,9 +373,7 @@
                         </div>
                     </div>
 
-                    <!-- Main Playback Controls -->
                     <div class="flex items-center justify-center gap-4 sm:gap-5">
-                        <!-- Jump back to 1:14 -->
                         <button
                             id="restartBtn"
                             type="button"
@@ -235,24 +383,20 @@
                             1:14
                         </button>
 
-                        <!-- Play / Pause Button -->
                         <button
                             id="playPauseBtn"
                             type="button"
                             aria-label="Reproducir o pausar"
                             class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-rose-500 hover:bg-rose-400 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-rose-500/30 transition"
                         >
-                            <!-- Play Icon -->
                             <svg id="playIcon" class="w-5 h-5 sm:w-6 sm:h-6 ml-0.5 fill-current" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z"/>
                             </svg>
-                            <!-- Pause Icon -->
                             <svg id="pauseIcon" class="w-5 h-5 sm:w-6 sm:h-6 fill-current hidden" viewBox="0 0 24 24">
                                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                             </svg>
                         </button>
 
-                        <!-- Mute / Unmute Button -->
                         <button
                             id="muteBtn"
                             type="button"
@@ -268,45 +412,208 @@
                         </button>
                     </div>
 
-                    <!-- Error Status Message -->
                     <p id="statusMsg" class="hidden mt-4 text-xs text-rose-300 bg-rose-500/10 border border-rose-500/20 rounded-xl px-3 py-2">
                         No se encontró <strong>cancion.mp3</strong> en la misma carpeta.
                     </p>
 
-                    <!-- Local Audio Element -->
                     <audio id="audioPlayer" src="cancion.mp3" preload="metadata"></audio>
                 </div>
             </aside>
         </div>
 
-        <!-- Bottom Section: Polaroid Photos Grid -->
+        <!-- Middle Section: 3 Polaroid Photos Grid -->
         <section class="glass-card rounded-3xl p-6 sm:p-8 w-full">
+            <svg class="card-star-tl text-rose-400" viewBox="0 0 50 50" fill="currentColor"><polygon points="25,2 31,18 48,18 34,28 39,45 25,34 11,45 16,28 2,18 19,18" /></svg>
+            <svg class="card-star-br text-rose-300/60" viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="3"><polygon points="25,2 31,18 48,18 34,28 39,45 25,34 11,45 16,28 2,18 19,18" /></svg>
+
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 justify-items-center max-w-3xl mx-auto">
                 <!-- Polaroid 1 -->
-                <div class="polaroid w-full max-w-[240px] sm:max-w-[220px]" style="transform: rotate(0deg);">
-                    <img src="Foto1.jpg" onerror="if(this.src.endsWith('.jpg')) { this.src='Foto1.JPG'; } else if(this.src.endsWith('.JPG')) { this.src='Foto1.png'; } else { this.onerror=null; this.src='https://placehold.co/400x400/eee/333?text=Foto+1'; }" alt="Foto 1" class="w-full object-cover rounded-sm mb-3">
-                    <div class="text-xs text-center font-mono text-zinc-600 tracking-wider">Primera Vez En Shopping Mariano Juntos</div>
+                <div class="polaroid w-full max-w-[210px] rotate-[-1deg]" style="transform: rotate(-1deg);">
+                    <div class="w-full aspect-[4/5] overflow-hidden rounded-sm mb-3 bg-zinc-900 flex items-center justify-center">
+                        <img src="Foto1.jpg" onerror="if(this.src.endsWith('.jpg')) { this.src='Foto1.JPG'; } else if(this.src.endsWith('.JPG')) { this.src='Foto1.png'; } else { this.onerror=null; this.src='https://placehold.co/400x500/eee/333?text=Foto+1'; }" alt="Foto 1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-[11px] text-center font-mono text-zinc-600 tracking-wider pt-0.5">Primera Vez En Shopping Mariano Juntos</div>
                 </div>
                 <!-- Polaroid 2 -->
-                <div class="polaroid w-full max-w-[240px] sm:max-w-[220px]" style="transform: rotate(0deg);">
-                    <img src="Foto2.jpg" onerror="if(this.src.endsWith('.jpg')) { this.src='Foto2.JPG'; } else if(this.src.endsWith('.JPG')) { this.src='Foto2.png'; } else { this.onerror=null; this.src='https://placehold.co/400x400/eee/333?text=Foto+2'; }" alt="Foto 2" class="w-full object-cover rounded-sm mb-3">
-                    <div class="text-xs text-center font-mono text-zinc-600 tracking-wider">Inicio De La Primavera</div>
+                <div class="polaroid w-full max-w-[210px] rotate-[1.5deg]" style="transform: rotate(1.5deg);">
+                    <div class="w-full aspect-[4/5] overflow-hidden rounded-sm mb-3 bg-zinc-900 flex items-center justify-center">
+                        <img src="Foto2.jpg" onerror="if(this.src.endsWith('.jpg')) { this.src='Foto2.JPG'; } else if(this.src.endsWith('.JPG')) { this.src='Foto2.png'; } else { this.onerror=null; this.src='https://placehold.co/400x500/eee/333?text=Foto+2'; }" alt="Foto 2" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-[11px] text-center font-mono text-zinc-600 tracking-wider pt-0.5">Inicio De La Primavera</div>
                 </div>
                 <!-- Polaroid 3 -->
-                <div class="polaroid w-full max-w-[240px] sm:max-w-[220px]" style="transform: rotate(0deg);">
-                    <img src="Foto3.jpg" onerror="if(this.src.endsWith('.jpg')) { this.src='Foto3.JPG'; } else if(this.src.endsWith('.JPG')) { this.src='Foto3.png'; } else { this.onerror=null; this.src='https://placehold.co/400x400/eee/333?text=Foto+3'; }" alt="Foto 3" class="w-full object-cover rounded-sm mb-3">
-                    <div class="text-xs text-center font-mono text-zinc-600 tracking-wider">Olimpiadas</div>
+                <div class="polaroid w-full max-w-[210px] rotate-[-1.5deg]" style="transform: rotate(-1.5deg);">
+                    <div class="w-full aspect-[4/5] overflow-hidden rounded-sm mb-3 bg-zinc-900 flex items-center justify-center">
+                        <img src="Foto3.jpg" onerror="if(this.src.endsWith('.jpg')) { this.src='Foto3.JPG'; } else if(this.src.endsWith('.JPG')) { this.src='Foto3.png'; } else { this.onerror=null; this.src='https://placehold.co/400x500/eee/333?text=Foto+3'; }" alt="Foto 3" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-[11px] text-center font-mono text-zinc-600 tracking-wider pt-0.5">Olimpiadas</div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Bottom Section: "Nuestro Futuro" Enhanced Polaroid & Romantic Note -->
+        <section class="glass-card rounded-3xl p-8 sm:p-12 w-full relative overflow-hidden">
+            <svg class="card-star-tl text-rose-300/60" viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="3"><polygon points="25,2 31,18 48,18 34,28 39,45 25,34 11,45 16,28 2,18 19,18" /></svg>
+            <svg class="card-star-br text-rose-400" viewBox="0 0 50 50" fill="currentColor"><polygon points="25,2 31,18 48,18 34,28 39,45 25,34 11,45 16,28 2,18 19,18" /></svg>
+
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16 max-w-4xl mx-auto">
+                
+                <!-- Polaroid with Washi Tape & Chalkboard Question Mark -->
+                <div class="polaroid w-full max-w-[210px] rotate-[-2deg] shrink-0 relative mt-2">
+                    <div class="washi-tape"></div>
+                    <div class="w-full aspect-[4/5] chalkboard-bg rounded-sm mb-3 flex flex-col items-center justify-center relative overflow-hidden border border-zinc-800/80 shadow-inner">
+                        <span class="absolute top-3 left-4 text-zinc-500/60 text-xs select-none">✦</span>
+                        <span class="absolute top-5 right-5 text-rose-400/50 text-xs select-none">✧</span>
+                        <span class="font-handwriting text-8xl text-zinc-200/90 drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)] select-none leading-none">?</span>
+                        <span class="text-rose-400 text-sm mt-1 heart-pulse select-none">♥</span>
+                    </div>
+                    <div class="font-handwriting text-xl text-center text-zinc-700 tracking-wide flex items-center justify-center gap-1.5 pt-0.5">
+                        <span>Nuestro futuro</span>
+                        <span class="text-rose-500 text-base">♥</span>
+                    </div>
+                </div>
+
+                <!-- Message Text -->
+                <div class="text-center md:text-left space-y-5 max-w-lg">
+                    <p class="font-serif-display italic text-xl sm:text-2xl text-zinc-100 leading-relaxed">
+                        No sé qué va a pasar en el futuro pero lo que sí sé, es que quiero que mi futuro sea a tu lado.
+                    </p>
+
+                    <div class="flex items-center justify-center md:justify-start gap-3 py-1">
+                        <span class="h-[1px] w-12 bg-gradient-to-r from-transparent to-rose-400/50"></span>
+                        <span class="text-rose-400 text-sm heart-pulse">♥</span>
+                        <span class="h-[1px] w-12 bg-gradient-to-l from-transparent to-rose-400/50"></span>
+                    </div>
+
+                    <p class="font-serif-display italic text-lg sm:text-xl text-rose-200/90 leading-relaxed">
+                        Ojalá la vida nos regale la oportunidad de seguir escribiendo nuestra historia, y que esta vez sea para toda la vida.
+                    </p>
+                </div>
+
             </div>
         </section>
 
     </main>
 
     <script>
-        // --- Configuration ---
+        // --- Generador de Estrellas (Aparición progresiva y natural) ---
+        function createShootingStar(isInitialRandomPosition = false) {
+            const container = document.getElementById('starfall-container');
+            const foregroundContainer = document.getElementById('starfall-foreground');
+            if (!container || !foregroundContainer) return;
+
+            const star = document.createElement('div');
+            star.classList.add('shooting-star');
+
+            const size = Math.random() * 2 + 1.5; 
+            const length = Math.random() * 120 + 80; 
+            const duration = Math.random() * 2.5 + 3.5; 
+
+            star.style.width = `${length}px`;
+            star.style.height = `${size}px`;
+            star.style.animationDuration = `${duration}s`;
+
+            const opacityVariant = Math.random();
+            let midOp = 0.4;
+            let highOp = 0.6;
+            if (opacityVariant > 0.4) {
+                midOp = 0.9;
+                highOp = 1.0;
+            } else {
+                midOp = 0.25;
+                highOp = 0.4;
+            }
+            star.style.setProperty('--star-opacity-mid', midOp);
+            star.style.setProperty('--star-opacity-high', highOp);
+
+            const docWidth = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, window.innerWidth);
+            const docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, window.innerHeight);
+
+            let startX = -80; 
+            let startY = Math.random() * docHeight;
+
+            // Si es parte de la carga inicial, permitimos que algunas nazcan ya avanzadas en pantalla para que no esté vacío
+            if (isInitialRandomPosition && Math.random() > 0.4) {
+                startX = Math.random() * docWidth;
+            }
+
+            star.style.left = `${startX}px`;
+            star.style.top = `${startY}px`;
+
+            const angleDeg = 20;
+            const angleRad = angleDeg * (Math.PI / 180); 
+            const distance = docWidth + 300; 
+
+            const endX = Math.cos(angleRad) * distance;
+            const endY = Math.sin(angleRad) * distance;
+
+            star.style.setProperty('--end-x', `${endX}px`);
+            star.style.setProperty('--end-y', `${endY}px`);
+
+            const isForeground = Math.random() < 0.45;
+            if (isForeground) {
+                star.classList.add('foreground-star');
+                foregroundContainer.appendChild(star);
+            } else {
+                container.appendChild(star);
+            }
+
+            setTimeout(() => {
+                star.remove();
+            }, duration * 1000);
+        }
+
+        // Carga escalonada inicial: se generan de a poco para que no aparezcan todas de golpe al abrir
+        let spawnedCount = 0;
+        const maxInitialStars = 35;
+        const initialInterval = setInterval(() => {
+            createShootingStar(true);
+            spawnedCount++;
+            if (spawnedCount >= maxInitialStars) {
+                clearInterval(initialInterval);
+            }
+        }, 150);
+
+        // Flujo continuo normal de estrellas cruzando la pantalla
+        setInterval(() => {
+            createShootingStar(false);
+        }, 220);
+
+
+        // --- Generador de Textos "Make a wish" ---
+        function createWishText() {
+            const wishContainer = document.getElementById('wish-container');
+            if (!wishContainer) return;
+
+            const wish = document.createElement('div');
+            wish.classList.add('wish-text');
+            wish.textContent = "Make a wish";
+
+            const randomSize = Math.random() * 0.5 + 0.75;
+            wish.style.fontSize = `${randomSize}rem`;
+
+            const docWidth = Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, window.innerWidth);
+            const docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, window.innerHeight);
+
+            const randomX = Math.random() * Math.max(0, docWidth - 120);
+            const randomY = Math.random() * Math.max(0, docHeight - 50);
+
+            wish.style.left = `${randomX}px`;
+            wish.style.top = `${randomY}px`;
+
+            wishContainer.appendChild(wish);
+
+            setTimeout(() => {
+                wish.remove();
+            }, 4000);
+        }
+
+        setInterval(createWishText, 700);
+
+
+        // --- Audio Configuration ---
         const START_SECOND = 74; // 1:14 = 74 seconds
 
-        // --- Elements ---
         const audio = document.getElementById('audioPlayer');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const restartBtn = document.getElementById('restartBtn');
@@ -325,7 +632,6 @@
         let hasInitializedStart = false;
         let isSeeking = false;
 
-        // Format seconds as M:SS
         function formatTime(seconds) {
             if (!isFinite(seconds) || seconds < 0) return '0:00';
             const mins = Math.floor(seconds / 60);
@@ -333,7 +639,6 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        // Update play/pause visuals
         function setPlayingUI(isPlaying) {
             if (isPlaying) {
                 playIcon.classList.add('hidden');
@@ -348,7 +653,6 @@
             }
         }
 
-        // Set initial position to 1:14 once metadata is ready
         audio.addEventListener('loadedmetadata', () => {
             durationLabel.textContent = formatTime(audio.duration);
             progressBar.max = audio.duration || 100;
@@ -360,7 +664,6 @@
             }
         });
 
-        // Update progress bar while playing
         audio.addEventListener('timeupdate', () => {
             if (!isSeeking) {
                 progressBar.value = audio.currentTime;
@@ -368,19 +671,16 @@
             }
         });
 
-        // Reset UI when song ends
         audio.addEventListener('ended', () => {
             setPlayingUI(false);
             audio.currentTime = START_SECOND;
         });
 
-        // Show friendly message if cancion.mp3 is not found
         audio.addEventListener('error', () => {
-            statusMsg.classList.remove('hidden');
+            statusMsg.classList.add('hidden');
             setPlayingUI(false);
         });
 
-        // Play / Pause button click
         playPauseBtn.addEventListener('click', async () => {
             try {
                 if (audio.paused) {
@@ -400,7 +700,6 @@
             }
         });
 
-        // Jump directly to 1:14 button
         restartBtn.addEventListener('click', async () => {
             try {
                 audio.currentTime = START_SECOND;
@@ -414,7 +713,6 @@
             }
         });
 
-        // Scrubbing the progress bar
         progressBar.addEventListener('input', () => {
             isSeeking = true;
             currentTimeLabel.textContent = formatTime(Number(progressBar.value));
@@ -426,7 +724,6 @@
             isSeeking = false;
         });
 
-        // Mute / Unmute toggle
         muteBtn.addEventListener('click', () => {
             audio.muted = !audio.muted;
             volumeOnIcon.classList.toggle('hidden', audio.muted);
